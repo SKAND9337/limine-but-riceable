@@ -1,6 +1,6 @@
 --- common/lib/stb_image.h
 +++ common/lib/stb_image.h
-@@ -137,6 +137,60 @@
+@@ -137,6 +137,61 @@
  #ifndef STBI_INCLUDE_STB_IMAGE_H
  #define STBI_INCLUDE_STB_IMAGE_H
  
@@ -62,7 +62,7 @@
  // DOCUMENTATION
  //
  // Limitations:
-@@ -391,7 +445,7 @@
+@@ -391,7 +446,7 @@
     STBI_rgb_alpha  = 4
  };
  
@@ -71,7 +71,7 @@
  typedef unsigned char stbi_uc;
  typedef unsigned short stbi_us;
  
-@@ -594,8 +648,8 @@
+@@ -594,8 +649,8 @@
  
  #include <stdarg.h>
  #include <stddef.h> // ptrdiff_t on osx
@@ -82,7 +82,7 @@
  #include <limits.h>
  
  #if !defined(STBI_NO_LINEAR) || !defined(STBI_NO_HDR)
-@@ -1678,10 +1732,12 @@
+@@ -1678,10 +1733,12 @@
  STBIDEF void   stbi_ldr_to_hdr_scale(float scale) { stbi__l2h_scale = scale; }
  #endif
  
