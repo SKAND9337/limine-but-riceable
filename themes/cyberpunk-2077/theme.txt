@@ -1,0 +1,63 @@
+# ==============================================================================
+# Theme: Cyberpunk 2077 Night City // Spatial Braindance Deck
+# VisionOS-Inspired Floating Shard Deck with Authentic Night City Cyberpunk Styling
+# ==============================================================================
+
+desktop-image: "background.png"
+desktop-color: "#05070c"
+
+# Top Cyberdeck Neural Header Pill
++ label {
+    left = 50%-320
+    top = 34
+    width = 640
+    height = 42
+    align = "center"
+    text = "⚡ NIGHT CITY // CYBERDECK NEURAL LINK 2077 ⚡"
+    color = "#FCEE09"
+    font = "font_title.pf2"
+}
+
+# Sub-Header Telemetry Status
++ label {
+    left = 50%-300
+    top = 78
+    width = 600
+    height = 24
+    align = "center"
+    text = "NETRUNNER ICE: BREACHED // SYSTEM INTEGRITY: 100% // NODE: ACTIVE"
+    color = "#00F0FF"
+    font = "font_hud.pf2"
+}
+
+# Horizontal Spatial Shards Deck (Multi-Plane 3D Elevation)
++ boot_menu {
+    layout = "spatial"
+    top = 28%
+    card_width = 250
+    card_height = 340
+    item_spacing = 30
+    icon_width = 56
+    icon_height = 56
+
+    item_pixmap_style = "card_*.png"
+    selected_item_pixmap_style = "card_sel_*.png"
+
+    item_color = "#9AB3CC"
+    selected_item_color = "#FCEE09"
+    item_font = "font_item.pf2"
+    selected_item_font = "font_title.pf2"
+}
+
+# Bottom Countdown / Cyberdeck Keybinds Pill
++ label {
+    id = "__timeout__"
+    left = 50%-350
+    top = 86%
+    width = 700
+    height = 44
+    align = "center"
+    text = "▶ SYSTEM BOOT IN %d SECONDS...   [←/→] SHARD SELECT   [ENTER] JACK IN   [ESC] ABORT"
+    color = "#E0E6F0"
+    font = "font_hud.pf2"
+}
