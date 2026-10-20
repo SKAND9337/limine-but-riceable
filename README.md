@@ -6,6 +6,7 @@
 > **The modern, blazing-fast, multiprotocol bootloader — now with full GRUB-compatible graphical theming and live offline previews.**
 
 ### All new features vibecoded and alpha-stage. NOT to be used on real hardware yet.
+#### Also this README is gemini-generated so there might be overpromises here n there.
 ---
 
 ## 🌟 Overview
