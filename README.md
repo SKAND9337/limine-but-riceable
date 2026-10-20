@@ -5,6 +5,7 @@
 
 > **The modern, blazing-fast, multiprotocol bootloader — now with full GRUB-compatible graphical theming and live offline previews.**
 
+### All new features vibecoded and alpha-stage.
 ---
 
 ## 🌟 Overview
