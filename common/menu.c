@@ -1962,6 +1962,7 @@ noreturn void _menu(bool first_run) {
     uint64_t timeout_ms = 5000;
 
     bool has_timeout = false;
+    bool theme_active = false;
 
 #if defined (UEFI)
     has_timeout = bli_update_oneshot_timeout(&timeout_ms, &skip_timeout);
@@ -2017,7 +2018,6 @@ noreturn void _menu(bool first_run) {
 
     menu_init_term();
 
-    bool theme_active = false;
     if (!quiet) {
         char *theme_path = config_get_value(NULL, 0, "THEME");
         if (theme_path != NULL) {
@@ -2382,6 +2382,7 @@ timeout_aborted:
                         selected_entry = 0;
                     goto refresh;
                 }
+                break;
             case '\n':
             case ' ':
             autoboot:

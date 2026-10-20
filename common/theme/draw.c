@@ -260,8 +260,9 @@ void theme_canvas_flush(struct theme_canvas *canvas, struct fb_info *fb) {
     size_t copy_h = canvas->height < fb->framebuffer_height ? canvas->height : fb->framebuffer_height;
 
     if (fb->framebuffer_bpp == 24) {
+        uint8_t *fb_base = (void *)(uintptr_t)fb->framebuffer_addr;
         for (size_t y = 0; y < copy_h; y++) {
-            uint8_t *fb_row = (uint8_t *)((uintptr_t)fb->framebuffer_addr + y * fb->framebuffer_pitch);
+            uint8_t *fb_row = fb_base + y * fb->framebuffer_pitch;
             const uint32_t *canvas_row = &canvas->pixels[y * canvas->pitch];
             for (size_t x = 0; x < copy_w; x++) {
                 uint32_t px = format_pixel(fb, canvas_row[x]);
@@ -276,8 +277,9 @@ void theme_canvas_flush(struct theme_canvas *canvas, struct fb_info *fb) {
                              fb->green_mask_size == 8 && fb->green_mask_shift == 8 &&
                              fb->blue_mask_size == 8 && fb->blue_mask_shift == 0);
 
+        uint8_t *fb_base = (void *)(uintptr_t)fb->framebuffer_addr;
         for (size_t y = 0; y < copy_h; y++) {
-            uint32_t *fb_row = (uint32_t *)((uintptr_t)fb->framebuffer_addr + y * fb->framebuffer_pitch);
+            uint32_t *fb_row = (uint32_t *)(void *)(fb_base + y * fb->framebuffer_pitch);
             const uint32_t *canvas_row = &canvas->pixels[y * canvas->pitch];
 
             if (direct_match) {
