@@ -10,22 +10,6 @@
 #include <lib/print.h>
 #include <theme/theme.h>
 
-static char *find_substring(const char *haystack, const char *needle) {
-    if (haystack == NULL || needle == NULL) {
-        return NULL;
-    }
-    if (!*needle) {
-        return (char *)haystack;
-    }
-    size_t needle_len = strlen(needle);
-    for (; *haystack; haystack++) {
-        if (*haystack == *needle && strncmp(haystack, needle, needle_len) == 0) {
-            return (char *)haystack;
-        }
-    }
-    return NULL;
-}
-
 static void free_string(char *s) {
     if (s != NULL) {
         pmm_free(s, strlen(s) + 1);
