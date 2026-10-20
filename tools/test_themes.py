@@ -42,13 +42,10 @@ def test_color_parsing():
 def test_packaged_themes():
     print("[*] Testing packaged example themes...")
     themes = [
-        "themes/artorias/theme.txt",
-        "themes/astronaut/theme.txt",
-        "themes/minecraft/theme.txt",
-        "themes/terminal-dark/theme.txt",
-        "themes/modern/theme.txt",
+        "themes/sekiro/theme.txt",
         "themes/spatial-glass/theme.txt",
-        "themes/cyberpunk-2077/theme.txt"
+        "themes/cyberpunk-2077/theme.txt",
+        "themes/artorias/theme.txt"
     ]
     with tempfile.TemporaryDirectory() as tmpdir:
         for t in themes:
@@ -68,7 +65,7 @@ def test_resolutions():
         (800,  600,  "SVGA"),
         (640,  480,  "VGA Low-Res")
     ]
-    theme = "themes/modern/theme.txt"
+    theme = "themes/sekiro/theme.txt"
     with tempfile.TemporaryDirectory() as tmpdir:
         for w, h, label in resolutions:
             out_png = os.path.join(tmpdir, f"out_{w}x{h}.png")

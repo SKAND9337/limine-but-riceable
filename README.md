@@ -19,24 +19,23 @@ Even better: it implements **GRUB theme format compatibility**, meaning you can 
 
 ---
 
-## 📸 Screenshots
+## 📸 Featured Themes
 
-### 🥽 VisionOS Spatial Glass Theme (Spatial UI)
-*Floating frosted glass cards, multi-plane Z-depth elevation, specular rim highlights, and 2D spatial navigation.*
+### ⚡ Cyberpunk 2077: Night City (Spatial UI)
+*VisionOS-style floating horizontal Data Shard deck with multi-plane elevation, custom Space Grotesk Bold and Terminus monospace PFF2 fonts, bespoke dual-tone neon icon set, and 9-slice dark glass cards with electric yellow glow and chamfered corner notches.*
+![Cyberpunk 2077 Theme Preview](docs/screenshots/cyberpunk-2077.png)
+
+### 🥽 VisionOS Spatial Glass (Spatial UI)
+*Floating frosted glass cards, multi-plane Z-depth elevation, specular rim highlights, and 2D spatial horizontal navigation.*
 ![Spatial Glass Preview](docs/screenshots/spatial-glass.png)
 
-### 🗡️ Sekiro: Shadows Die Twice Theme
+### 🗡️ Sekiro: Shadows Die Twice
 *Right-aligned Shinobi layout, 3-slice vermillion lacquer selection box, custom PFF2 typography, Katana slash divider, and resurrection countdown.*
 ![Sekiro Theme Preview](docs/screenshots/sekiro.png)
 
 ### ⚔️ Dark Souls: Artorias of the Abyss
 *Atmospheric Dark Souls aesthetic, Abyss glow selection highlight, and custom serif fonts.*
 ![Artorias Theme Preview](docs/screenshots/artorias.png)
-
-### ⛏️ Minecraft & Terminal Dark
-| Minecraft Theme | Retro Terminal Dark |
-|:---:|:---:|
-| ![Minecraft Theme](docs/screenshots/minecraft.png) | ![Terminal Dark](docs/screenshots/terminal-dark.png) |
 
 ---
 
@@ -160,11 +159,10 @@ limine-but-riceable/
 │   ├── menu.c          # Boot menu hooks and input handling
 │   └── lib/image.c     # Hardened image decoder (PNG, JPEG, BMP, GIF)
 ├── themes/             # Curated example themes
+│   ├── cyberpunk-2077/ # Cyberpunk 2077 Night City (Spatial UI)
+│   ├── spatial-glass/  # VisionOS Spatial Glass (Spatial UI)
 │   ├── sekiro/         # Sekiro: Shadows Die Twice
-│   ├── artorias/       # Dark Souls: Artorias of the Abyss
-│   ├── minecraft/      # Minecraft Boot Screen
-│   ├── terminal-dark/  # Retro Minimalist Terminal
-│   └── astronaut/      # Sci-Fi Astronaut
+│   └── artorias/       # Dark Souls: Artorias of the Abyss
 ├── tools/              # Preview and validation utilities
 │   ├── preview_theme.py # Exact 1:1 offline desktop theme renderer
 │   └── test_themes.py  # Automated regression & resolution tests
