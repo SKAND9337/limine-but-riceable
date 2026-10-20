@@ -41,6 +41,10 @@ struct theme_boot_menu {
     int item_spacing;
     int item_padding;
 
+    bool is_spatial;
+    int card_width;
+    int card_height;
+
     bool scrollbar;
 
     char *item_font;
@@ -136,6 +140,7 @@ void theme_canvas_flush(struct theme_canvas *canvas, struct fb_info *fb);
 /* theme.c (lifecycle & controller) */
 bool theme_init(const char *theme_path);
 bool theme_is_active(void);
+bool theme_is_spatial(void);
 void theme_cleanup(void);
 void theme_render_menu(size_t selected_entry, size_t max_entries, struct menu_entry *tree_root, size_t tree_offset);
 void theme_render_timeout(uint64_t timeout_ms);

@@ -20,6 +20,10 @@ Even better: it implements **GRUB theme format compatibility**, meaning you can 
 
 ## 📸 Screenshots
 
+### 🥽 VisionOS Spatial Glass Theme (Spatial UI)
+*Floating frosted glass cards, multi-plane Z-depth elevation, specular rim highlights, and 2D spatial navigation.*
+![Spatial Glass Preview](docs/screenshots/spatial-glass.png)
+
 ### 🗡️ Sekiro: Shadows Die Twice Theme
 *Right-aligned Shinobi layout, 3-slice vermillion lacquer selection box, custom PFF2 typography, Katana slash divider, and resurrection countdown.*
 ![Sekiro Theme Preview](docs/screenshots/sekiro.png)
@@ -37,6 +41,10 @@ Even better: it implements **GRUB theme format compatibility**, meaning you can 
 
 ## ✨ Features
 
+- **🥽 VisionOS-Style Spatial UI (Spatial Card Deck):**
+  - Break free from vertical text lists: entries can be laid out as a horizontal deck of floating acrylic cards (`layout = "spatial"`).
+  - Multi-plane elevation: the active card rises towards the viewer with soft ambient occlusion and diffuse elevation drop shadows.
+  - 2D spatial arrow navigation: traverse cards horizontally with Left/Right arrows, expand sub-actions with Down arrow, and boot with Enter.
 - **🎨 Full GRUB-Compatible Theme Specification:**
   - Parses standard GRUB `theme.txt` files (`+ boot_menu`, `+ label`, `+ image`, `+ progress_bar`).
   - Supports 9-slice and 3-slice pixmap boxes (`pixmap_style` with corner/edge slicing for buttons and selection rectangles).

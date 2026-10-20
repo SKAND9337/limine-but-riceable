@@ -1,0 +1,51 @@
+# ==============================================================================
+# Theme: Spatial Glass (VisionOS-Inspired Floating UI)
+# Layout: Horizontal Card Deck with Multi-Plane Depth Elevation
+# ==============================================================================
+
+desktop-image: "background.png"
+desktop-color: "#0a0d16"
+
+# Top Spatial Header Pill
++ label {
+    left = 50%-240
+    top = 40
+    width = 480
+    height = 44
+    align = "center"
+    text = "✦ LIMINE SPATIAL OS DECK"
+    color = "#eaf2ff"
+    font = "font_title.pf2"
+}
+
+# Main Spatial Boot Cards Deck
++ boot_menu {
+    layout = "spatial"
+    top = 28%
+    card_width = 270
+    card_height = 350
+    item_spacing = 36
+    icon_width = 48
+    icon_height = 48
+
+    item_pixmap_style = "card_*.png"
+    selected_item_pixmap_style = "card_sel_*.png"
+
+    item_color = "#c0cbdc"
+    selected_item_color = "#ffffff"
+    item_font = "font.pf2"
+    selected_item_font = "font_title.pf2"
+}
+
+# Bottom Context / Countdown Pill
++ label {
+    id = "__timeout__"
+    left = 50%-280
+    top = 85%
+    width = 560
+    height = 46
+    align = "center"
+    text = "▶ Booting in %d seconds...   [←/→] Select   [Esc] Pause"
+    color = "#d4e2f4"
+    font = "font.pf2"
+}

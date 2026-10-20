@@ -587,6 +587,14 @@ bool theme_parse_buffer(const char *buf, size_t len, const char *theme_dir, stru
                     theme->menu.icon_height = (int)strtoui(val, NULL, 10);
                 } else if (strcasecmp(key, "item_icon_space") == 0 || strcasecmp(key, "item-icon-space") == 0) {
                     theme->menu.item_icon_space = (int)strtoui(val, NULL, 10);
+                } else if (strcasecmp(key, "layout") == 0) {
+                    if (strcasecmp(val, "spatial") == 0 || strcasecmp(val, "horizontal") == 0 || strcasecmp(val, "cards") == 0) {
+                        theme->menu.is_spatial = true;
+                    }
+                } else if (strcasecmp(key, "card_width") == 0 || strcasecmp(key, "card-width") == 0) {
+                    theme->menu.card_width = (int)strtoui(val, NULL, 10);
+                } else if (strcasecmp(key, "card_height") == 0 || strcasecmp(key, "card-height") == 0) {
+                    theme->menu.card_height = (int)strtoui(val, NULL, 10);
                 }
                 break;
 

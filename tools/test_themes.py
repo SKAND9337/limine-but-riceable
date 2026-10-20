@@ -46,7 +46,8 @@ def test_packaged_themes():
         "themes/astronaut/theme.txt",
         "themes/minecraft/theme.txt",
         "themes/terminal-dark/theme.txt",
-        "themes/modern/theme.txt"
+        "themes/modern/theme.txt",
+        "themes/spatial-glass/theme.txt"
     ]
     with tempfile.TemporaryDirectory() as tmpdir:
         for t in themes:

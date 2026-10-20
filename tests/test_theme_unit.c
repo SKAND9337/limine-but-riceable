@@ -432,6 +432,7 @@ int main(void) {
     test_file_parsing("themes/terminal-dark/theme.txt");
     test_file_parsing("themes/minecraft/theme.txt");
     test_file_parsing("themes/astronaut/theme.txt");
+    test_file_parsing("themes/spatial-glass/theme.txt");
     printf("All theme unit tests passed successfully!\n");
     return 0;
 }

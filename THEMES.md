@@ -89,8 +89,13 @@ title-font: "font.pf2"            # Optional PFF2 font for header title
     width = 500                   # Menu container width
     height = 50%                  # Menu container height
 
-    item_height = 40              # Row height per entry
-    item_spacing = 10             # Vertical gap between entries
+    # Layout style: "vertical" (default standard list) or "spatial" (VisionOS card deck)
+    layout = "spatial"
+    card_width = 270              # Spatial card width
+    card_height = 350             # Spatial card height
+
+    item_height = 40              # Row height per entry (vertical mode)
+    item_spacing = 36             # Gap between items (vertical or spatial cards)
     item_padding = 16             # Text horizontal inset
 
     item_font = "font.pf2"        # PFF2 font for unselected items

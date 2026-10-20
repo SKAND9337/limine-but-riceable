@@ -2316,6 +2316,15 @@ timeout_aborted:
             case GETCHAR_END:
                 selected_entry = max_entries - 1;
                 goto refresh;
+            case GETCHAR_CURSOR_LEFT:
+                if (theme_is_spatial()) {
+                    if (selected_entry == 0)
+                        selected_entry = max_entries - 1;
+                    else
+                        selected_entry--;
+                    goto refresh;
+                }
+                break;
             case GETCHAR_CURSOR_UP:
                 if (selected_entry == 0)
                     selected_entry = max_entries - 1;
@@ -2368,6 +2377,11 @@ timeout_aborted:
                 break;
             }
             case GETCHAR_CURSOR_RIGHT:
+                if (theme_is_spatial()) {
+                    if (++selected_entry == max_entries)
+                        selected_entry = 0;
+                    goto refresh;
+                }
             case '\n':
             case ' ':
             autoboot:

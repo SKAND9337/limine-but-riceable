@@ -527,83 +527,175 @@ void theme_render_menu(size_t selected_entry, size_t max_entries, struct menu_en
     int menu_w = theme_eval_coord(active_theme.menu.width, (int)active_canvas.width, (int)active_canvas.width / 2);
     int menu_h = theme_eval_coord(active_theme.menu.height, (int)active_canvas.height, (int)active_canvas.height / 2);
 
-    int item_h = active_theme.menu.item_height > 16 ? active_theme.menu.item_height : 24;
-    int spacing = active_theme.menu.item_spacing >= 0 ? active_theme.menu.item_spacing : 6;
-    int padding = active_theme.menu.item_padding >= 0 ? active_theme.menu.item_padding : 4;
+    if (active_theme.menu.is_spatial) {
+        int card_w = active_theme.menu.card_width > 0 ? active_theme.menu.card_width : 270;
+        int card_h = active_theme.menu.card_height > 0 ? active_theme.menu.card_height : 350;
+        int card_spacing = active_theme.menu.item_spacing >= 0 ? active_theme.menu.item_spacing : 36;
 
-    int visible_count = (menu_h > 0) ? menu_h / (item_h + spacing) : 1;
-    if (visible_count <= 0) {
-        visible_count = 1;
-    }
-
-    for (int i = 0; i < visible_count; i++) {
-        size_t entry_idx = tree_offset + i;
-        if (entry_idx >= max_entries) {
-            break;
+        int total_deck_w = (int)max_entries * card_w + (int)(max_entries - 1) * card_spacing;
+        int start_x = menu_x;
+        if (!active_theme.menu.left.is_set) {
+            start_x = ((int)active_canvas.width - total_deck_w) / 2;
+        }
+        if (start_x < 20) {
+            start_x = 20;
         }
 
-        size_t level = 0;
-        struct menu_entry *entry = theme_get_entry_at(tree_root, entry_idx, &level);
-        if (entry == NULL) {
-            break;
-        }
+        for (size_t i = 0; i < max_entries; i++) {
+            size_t entry_idx = tree_offset + i;
+            if (entry_idx >= max_entries) {
+                break;
+            }
 
-        int item_y = menu_y + i * (item_h + spacing);
-        bool is_selected = (entry_idx == selected_entry);
+            size_t level = 0;
+            struct menu_entry *entry = theme_get_entry_at(tree_root, entry_idx, &level);
+            if (entry == NULL) {
+                break;
+            }
 
-        if (is_selected) {
-            if (active_theme.menu.selected_item_box.is_loaded) {
-                theme_box_draw(&active_canvas, &active_theme.menu.selected_item_box, menu_x, item_y, menu_w, item_h);
+            bool is_selected = (entry_idx == selected_entry);
+            int cx = start_x + (int)i * (card_w + card_spacing);
+            int cy = menu_y;
+            int cw = card_w;
+            int ch = card_h;
+
+            if (is_selected) {
+                cy -= 12; // Spatial depth elevation
+                if (active_theme.menu.selected_item_box.is_loaded) {
+                    theme_box_draw(&active_canvas, &active_theme.menu.selected_item_box, cx, cy, cw, ch);
+                } else {
+                    uint32_t sel_bg = active_theme.menu.has_selected_bg ? active_theme.menu.selected_item_bg_color : 0x1c2438;
+                    theme_draw_rect(&active_canvas, cx, cy, cw, ch, sel_bg);
+                }
             } else {
-                uint32_t sel_bg = active_theme.menu.has_selected_bg ? active_theme.menu.selected_item_bg_color : 0x223355;
-                theme_draw_rect(&active_canvas, menu_x, item_y, menu_w, item_h, sel_bg);
+                if (active_theme.menu.item_box.is_loaded) {
+                    theme_box_draw(&active_canvas, &active_theme.menu.item_box, cx, cy, cw, ch);
+                } else {
+                    theme_draw_rect(&active_canvas, cx, cy, cw, ch, 0x121826);
+                }
             }
-        } else {
-            if (active_theme.menu.item_box.is_loaded) {
-                theme_box_draw(&active_canvas, &active_theme.menu.item_box, menu_x, item_y, menu_w, item_h);
+
+            // Distro Hero Icon
+            struct image *icon = theme_find_icon(entry->name);
+            int icon_sz = active_theme.menu.icon_width > 0 ? active_theme.menu.icon_width : 48;
+            if (icon != NULL) {
+                int icon_x = cx + (cw - icon_sz) / 2;
+                int icon_y = cy + 40;
+                theme_draw_image(&active_canvas, icon, icon_x, icon_y, icon_sz, icon_sz);
+            }
+
+            uint32_t fg = is_selected ? active_theme.menu.selected_item_color : active_theme.menu.item_color;
+            struct pff2_font *f = is_selected ?
+                (active_theme.menu.selected_item_font_obj ? active_theme.menu.selected_item_font_obj : active_theme.menu.item_font_obj) :
+                active_theme.menu.item_font_obj;
+
+            // Title
+            int title_y = cy + 115;
+            if (f != NULL) {
+                int tw = pff2_string_width(f, entry->name);
+                int tx = cx + (cw - tw) / 2;
+                pff2_draw_string(&active_canvas, f, entry->name, tx, title_y, fg, 0, true);
+            } else {
+                int tw = theme_string_width(entry->name, 1);
+                int tx = cx + (cw - tw) / 2;
+                theme_draw_string(&active_canvas, entry->name, tx, title_y, fg, 0, true, 1);
+            }
+
+            // Subtitle / Comment
+            if (entry->comment != NULL && *entry->comment != '\0') {
+                int com_y = title_y + (f ? (int)f->point_size + 10 : 22);
+                int ctx = cx + (cw - theme_string_width(entry->comment, 1)) / 2;
+                theme_draw_string(&active_canvas, entry->comment, ctx, com_y, 0x7890a8, 0, true, 1);
+            }
+
+            // Selected active accent bar
+            if (is_selected) {
+                int bar_w = 64;
+                int bar_h = 4;
+                int bar_x = cx + (cw - bar_w) / 2;
+                int bar_y = cy + ch - 16;
+                theme_draw_rect(&active_canvas, bar_x, bar_y, bar_w, bar_h, 0x3cb4ff);
             }
         }
+    } else {
+        int item_h = active_theme.menu.item_height > 16 ? active_theme.menu.item_height : 24;
+        int spacing = active_theme.menu.item_spacing >= 0 ? active_theme.menu.item_spacing : 6;
+        int padding = active_theme.menu.item_padding >= 0 ? active_theme.menu.item_padding : 4;
 
-        int text_x = menu_x + padding + (int)(level * 16);
-
-        // Icon discovery & rendering
-        struct image *icon = theme_find_icon(entry->name);
-        if (icon != NULL) {
-            int icon_w = active_theme.menu.icon_width > 0 ? active_theme.menu.icon_width : 32;
-            int icon_h = active_theme.menu.icon_height > 0 ? active_theme.menu.icon_height : 32;
-            int icon_y = item_y + (item_h - icon_h) / 2;
-            theme_draw_image(&active_canvas, icon, text_x, icon_y, icon_w, icon_h);
-            text_x += icon_w + active_theme.menu.item_icon_space;
+        int visible_count = (menu_h > 0) ? menu_h / (item_h + spacing) : 1;
+        if (visible_count <= 0) {
+            visible_count = 1;
         }
 
-        uint32_t fg = is_selected ? active_theme.menu.selected_item_color : active_theme.menu.item_color;
+        for (int i = 0; i < visible_count; i++) {
+            size_t entry_idx = tree_offset + i;
+            if (entry_idx >= max_entries) {
+                break;
+            }
 
-        char label_buf[256];
-        char *p = label_buf;
-        if (entry->sub != NULL) {
-            const char *prefix = entry->expanded ? "[-] " : "[+] ";
-            while (*prefix) *p++ = *prefix++;
-        } else if (level > 0) {
-            const char *prefix = "-> ";
-            while (*prefix) *p++ = *prefix++;
-        }
+            size_t level = 0;
+            struct menu_entry *entry = theme_get_entry_at(tree_root, entry_idx, &level);
+            if (entry == NULL) {
+                break;
+            }
 
-        const char *name = entry->name;
-        while (*name && p < label_buf + sizeof(label_buf) - 1) {
-            *p++ = *name++;
-        }
-        *p = '\0';
+            int item_y = menu_y + i * (item_h + spacing);
+            bool is_selected = (entry_idx == selected_entry);
 
-        struct pff2_font *f = is_selected ?
-            (active_theme.menu.selected_item_font_obj ? active_theme.menu.selected_item_font_obj : active_theme.menu.item_font_obj) :
-            active_theme.menu.item_font_obj;
+            if (is_selected) {
+                if (active_theme.menu.selected_item_box.is_loaded) {
+                    theme_box_draw(&active_canvas, &active_theme.menu.selected_item_box, menu_x, item_y, menu_w, item_h);
+                } else {
+                    uint32_t sel_bg = active_theme.menu.has_selected_bg ? active_theme.menu.selected_item_bg_color : 0x223355;
+                    theme_draw_rect(&active_canvas, menu_x, item_y, menu_w, item_h, sel_bg);
+                }
+            } else {
+                if (active_theme.menu.item_box.is_loaded) {
+                    theme_box_draw(&active_canvas, &active_theme.menu.item_box, menu_x, item_y, menu_w, item_h);
+                }
+            }
 
-        if (f != NULL) {
-            int text_y = item_y + (item_h - (int)f->point_size) / 2;
-            pff2_draw_string(&active_canvas, f, label_buf, text_x, text_y, fg, 0, true);
-        } else {
-            int text_y = item_y + (item_h - 16) / 2;
-            theme_draw_string(&active_canvas, label_buf, text_x, text_y, fg, 0, true, 1);
+            int text_x = menu_x + padding + (int)(level * 16);
+
+            // Icon discovery & rendering
+            struct image *icon = theme_find_icon(entry->name);
+            if (icon != NULL) {
+                int icon_w = active_theme.menu.icon_width > 0 ? active_theme.menu.icon_width : 32;
+                int icon_h = active_theme.menu.icon_height > 0 ? active_theme.menu.icon_height : 32;
+                int icon_y = item_y + (item_h - icon_h) / 2;
+                theme_draw_image(&active_canvas, icon, text_x, icon_y, icon_w, icon_h);
+                text_x += icon_w + active_theme.menu.item_icon_space;
+            }
+
+            uint32_t fg = is_selected ? active_theme.menu.selected_item_color : active_theme.menu.item_color;
+
+            char label_buf[256];
+            char *p = label_buf;
+            if (entry->sub != NULL) {
+                const char *prefix = entry->expanded ? "[-] " : "[+] ";
+                while (*prefix) *p++ = *prefix++;
+            } else if (level > 0) {
+                const char *prefix = "-> ";
+                while (*prefix) *p++ = *prefix++;
+            }
+
+            const char *name = entry->name;
+            while (*name && p < label_buf + sizeof(label_buf) - 1) {
+                *p++ = *name++;
+            }
+            *p = '\0';
+
+            struct pff2_font *f = is_selected ?
+                (active_theme.menu.selected_item_font_obj ? active_theme.menu.selected_item_font_obj : active_theme.menu.item_font_obj) :
+                active_theme.menu.item_font_obj;
+
+            if (f != NULL) {
+                int text_y = item_y + (item_h - (int)f->point_size) / 2;
+                pff2_draw_string(&active_canvas, f, label_buf, text_x, text_y, fg, 0, true);
+            } else {
+                int text_y = item_y + (item_h - 16) / 2;
+                theme_draw_string(&active_canvas, label_buf, text_x, text_y, fg, 0, true, 1);
+            }
         }
     }
 
@@ -664,5 +756,9 @@ void theme_render_timeout(uint64_t timeout_ms) {
     timeout_active = (timeout_ms > 0);
     current_timeout_ms = timeout_ms;
     theme_render_menu(last_selected_entry, last_max_entries, last_tree_root, last_tree_offset);
+}
+
+bool theme_is_spatial(void) {
+    return active && active_theme.menu.is_spatial;
 }
 // End of AI-generated section.

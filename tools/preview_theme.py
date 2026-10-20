@@ -373,6 +373,9 @@ def render_preview(theme_file, output_image, width=1920, height=1080):
     icon_width = 32
     icon_height = 32
     item_icon_space = 10
+    menu_layout = "vertical"
+    card_width = 270
+    card_height = 350
 
     timeout_left = "8%"
     timeout_top = "78%"
@@ -453,6 +456,9 @@ def render_preview(theme_file, output_image, width=1920, height=1080):
                 elif key_l == 'icon_width': icon_width = int(val)
                 elif key_l == 'icon_height': icon_height = int(val)
                 elif key_l == 'item_icon_space': item_icon_space = int(val)
+                elif key_l == 'layout': menu_layout = val.lower()
+                elif key_l in ('card_width', 'card-width'): card_width = int(val)
+                elif key_l in ('card_height', 'card-height'): card_height = int(val)
 
             elif current_section in ('label',):
                 if current_label_widget is not None:
@@ -550,38 +556,85 @@ def render_preview(theme_file, output_image, width=1920, height=1080):
                 draw_builtin_string(draw, font_bytes, title_text, m_left, title_y, title_color, scale=2)
 
         # 3. Boot entries
-        cur_y = m_top
-        for i, entry in enumerate(entries):
-            is_sel = (i == selected_idx)
-            if is_sel:
-                if selected_item_box.loaded:
-                    selected_item_box.draw(canvas, m_left, cur_y, m_width, item_height)
+        if menu_layout in ('spatial', 'horizontal', 'cards'):
+            total_deck_w = len(entries) * card_width + (len(entries) - 1) * item_spacing
+            start_x = m_left if menu_left != "8%" else (width - total_deck_w) // 2
+            if start_x < 20:
+                start_x = 20
+            deck_y = m_top
+
+            for i, entry in enumerate(entries):
+                is_sel = (i == selected_idx)
+                cx = start_x + i * (card_width + item_spacing)
+                cy = deck_y - (12 if is_sel else 0)
+                cw = card_width
+                ch = card_height
+
+                if is_sel:
+                    if selected_item_box.loaded:
+                        selected_item_box.draw(canvas, cx, cy, cw, ch)
+                    else:
+                        draw.rectangle([cx, cy, cx + cw, cy + ch], fill=selected_item_bg_color)
+                    fg = selected_item_color
+                    f_obj = selected_item_font or item_font
                 else:
-                    draw.rectangle([m_left, cur_y, m_left + m_width, cur_y + item_height], fill=selected_item_bg_color)
-                fg = selected_item_color
-                f_obj = selected_item_font
-            else:
-                if item_box.loaded:
-                    item_box.draw(canvas, m_left, cur_y, m_width, item_height)
-                fg = item_color
-                f_obj = item_font
+                    if item_box.loaded:
+                        item_box.draw(canvas, cx, cy, cw, ch)
+                    else:
+                        draw.rectangle([cx, cy, cx + cw, cy + ch], fill=(20, 26, 42))
+                    fg = item_color
+                    f_obj = item_font
 
-            text_x = m_left + item_padding
-            icon = find_icon(theme_dir, entry)
-            if icon:
-                s_icon = icon.resize((icon_width, icon_height), Image.Resampling.LANCZOS)
-                iy = cur_y + (item_height - icon_height) // 2
-                canvas.paste(s_icon, (text_x, iy), s_icon)
-                text_x += icon_width + item_icon_space
+                icon = find_icon(theme_dir, entry)
+                if icon:
+                    isz = icon_width if icon_width > 0 else 48
+                    s_icon = icon.resize((isz, isz), Image.Resampling.LANCZOS)
+                    canvas.paste(s_icon, (cx + (cw - isz) // 2, cy + 40), s_icon)
 
-            if f_obj:
-                text_y = cur_y + (item_height - f_obj.point_size) // 2
-                f_obj.draw_string(draw, entry, text_x, text_y, fg)
-            else:
-                text_y = cur_y + (item_height - 16) // 2
-                draw_builtin_string(draw, font_bytes, entry, text_x, text_y, fg, scale=1)
+                title_y = cy + 115
+                if f_obj:
+                    tw = f_obj.string_width(entry)
+                    f_obj.draw_string(draw, entry, cx + (cw - tw) // 2, title_y, fg)
+                else:
+                    tw = len(entry) * 8
+                    draw_builtin_string(draw, font_bytes, entry, cx + (cw - tw) // 2, title_y, fg, scale=1)
 
-            cur_y += item_height + item_spacing
+                if is_sel:
+                    bar_w = 64
+                    draw.rectangle([cx + (cw - bar_w) // 2, cy + ch - 16, cx + (cw + bar_w) // 2, cy + ch - 12], fill=(60, 190, 255))
+        else:
+            cur_y = m_top
+            for i, entry in enumerate(entries):
+                is_sel = (i == selected_idx)
+                if is_sel:
+                    if selected_item_box.loaded:
+                        selected_item_box.draw(canvas, m_left, cur_y, m_width, item_height)
+                    else:
+                        draw.rectangle([m_left, cur_y, m_left + m_width, cur_y + item_height], fill=selected_item_bg_color)
+                    fg = selected_item_color
+                    f_obj = selected_item_font
+                else:
+                    if item_box.loaded:
+                        item_box.draw(canvas, m_left, cur_y, m_width, item_height)
+                    fg = item_color
+                    f_obj = item_font
+
+                text_x = m_left + item_padding
+                icon = find_icon(theme_dir, entry)
+                if icon:
+                    s_icon = icon.resize((icon_width, icon_height), Image.Resampling.LANCZOS)
+                    iy = cur_y + (item_height - icon_height) // 2
+                    canvas.paste(s_icon, (text_x, iy), s_icon)
+                    text_x += icon_width + item_icon_space
+
+                if f_obj:
+                    text_y = cur_y + (item_height - f_obj.point_size) // 2
+                    f_obj.draw_string(draw, entry, text_x, text_y, fg)
+                else:
+                    text_y = cur_y + (item_height - 16) // 2
+                    draw_builtin_string(draw, font_bytes, entry, text_x, text_y, fg, scale=1)
+
+                cur_y += item_height + item_spacing
 
         # 4. Labels (countdown, headers, subtitles, hints)
         if labels:
