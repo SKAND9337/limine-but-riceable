@@ -33,4 +33,6 @@ struct flanterm_params {
 size_t gterm_prepare_flanterm_params(struct fb_info *fbs, size_t fbs_count,
                                      struct flanterm_params *out, size_t out_max);
 
+extern const uint8_t builtin_font[];
+
 #endif

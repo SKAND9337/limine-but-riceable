@@ -1,0 +1,100 @@
+# ==============================================================================
+# Theme: Sekiro: Shadows Die Twice (隻狼)
+# Aesthetic: Feudal Japanese Shinobi / Crimson Vermillion & Ember Gold Lacquer
+# Wallpaper: SEKIRO 1.png (Wolf in Ashina Castle)
+# Features: 3-Slice Lacquer Selection Box, Katana Slash Divider, PFF2 Typography,
+#           Distro Icons, Right-Aligned Layout, Dynamic Resurrection Countdown
+# ==============================================================================
+
+desktop-image: "background.png"
+desktop-color: "#181716"
+
+# Header Category / Protocol
++ label {
+    left = 58%
+    top = 13%
+    width = 36%
+    align = "left"
+    text = "SHINOBI PROTOCOL // 隻狼"
+    color = "#ff5004"
+    font = "font_title.pf2"
+}
+
+# Main Title
++ label {
+    left = 58%
+    top = 17%
+    width = 36%
+    align = "left"
+    text = "SEKIRO: SHADOWS DIE TWICE"
+    color = "#fca002"
+    font = "font_title.pf2"
+}
+
+# Katana Slash Divider
++ image {
+    file = "divider.png"
+    left = 58%
+    top = 22%
+    width = 36%
+    height = 2
+}
+
+# Boot Menu
++ boot_menu {
+    left = 58%
+    top = 26%
+    width = 36%
+    height = 48%
+
+    item_font = "font.pf2"
+    selected_item_font = "font.pf2"
+
+    item_color = "#cbd5e1"
+    selected_item_color = "#ffffff"
+
+    item_pixmap_style = "item_*.png"
+    selected_item_pixmap_style = "select_*.png"
+
+    item_height = 40
+    item_spacing = 8
+    item_padding = 14
+
+    icon_width = 24
+    icon_height = 24
+    item_icon_space = 14
+}
+
+# Dynamic Timeout Countdown
++ label {
+    id = "__timeout__"
+    left = 58%
+    top = 78%
+    width = 36%
+    align = "left"
+    text = "Resurrection available in %d seconds..."
+    color = "#fca002"
+    font = "font.pf2"
+}
+
+# Navigation / Shinobi Legend
++ label {
+    left = 58%
+    top = 83%
+    width = 36%
+    align = "left"
+    text = "[Up / Down] Traverse     [Enter] Deathblow     [E] Shinobi Arts"
+    color = "#94a3b8"
+    font = "font.pf2"
+}
+
+# Lore Quotation
++ label {
+    left = 58%
+    top = 87%
+    width = 36%
+    align = "left"
+    text = "“Hesitation is defeat.” — Sword Saint Isshin"
+    color = "#ea580c"
+    font = "font.pf2"
+}

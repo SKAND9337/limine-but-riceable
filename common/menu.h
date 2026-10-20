@@ -13,6 +13,9 @@ noreturn void reboot_to_fw_ui(void);
 
 noreturn void menu(bool first_run);
 
+struct menu_entry;
+bool should_skip_entry(struct menu_entry *entry);
+
 noreturn void boot(char *config);
 
 char *config_entry_editor(const char *title, const char *orig_entry);

@@ -29,6 +29,7 @@
 #include <protos/limine.h>
 #include <sys/cpu.h>
 #include <lib/misc.h>
+#include <theme/theme.h>
 
 #if defined (UEFI)
 EFI_GUID limine_efi_vendor_guid =
@@ -883,7 +884,7 @@ static bool arch_in_list(const char *list, const char *arch) {
     return false;
 }
 
-static inline bool should_skip_entry(struct menu_entry *entry) {
+bool should_skip_entry(struct menu_entry *entry) {
     if (entry->sub != NULL) {
         return false;
     }
@@ -2016,6 +2017,18 @@ noreturn void _menu(bool first_run) {
 
     menu_init_term();
 
+    bool theme_active = false;
+    if (!quiet) {
+        char *theme_path = config_get_value(NULL, 0, "THEME");
+        if (theme_path != NULL) {
+            if (theme_init(theme_path)) {
+                theme_active = true;
+            } else {
+                print("theme: falling back to default terminal menu.\n");
+            }
+        }
+    }
+
     if (!quiet) {
         mouse_init();
     }
@@ -2033,6 +2046,13 @@ noreturn void _menu(bool first_run) {
 
 refresh:
     mouse_erase_pointer();
+
+    if (theme_active) {
+        max_entries = print_tree(tree_offset, 0, NULL, 0, 0, selected_entry, menu_tree,
+                                 &selected_menu_entry, NULL, NULL);
+        theme_render_menu(selected_entry, max_entries, menu_tree, tree_offset);
+        goto post_render;
+    }
 
     if (selected_entry >= tree_offset + terms[0]->rows - 8 - header_offset) {
         tree_offset = selected_entry - (terms[0]->rows - 9 - header_offset);
@@ -2153,12 +2173,46 @@ refresh:
         set_cursor_pos_helper(x, y);
     }
 
+post_render:
     if (max_entries == 0 || selected_menu_entry->sub != NULL)
         skip_timeout = true;
 
     int c;
 
     if (skip_timeout == false) {
+        if (theme_active) {
+            while (timeout_ms != 0) {
+                uint64_t sleep_ms = timeout_ms % 1000;
+                if (sleep_ms == 0) sleep_ms = 1000;
+                if (theme_has_animation()) {
+                    uint64_t frame_delay = theme_get_frame_delay();
+                    if (frame_delay < sleep_ms) {
+                        sleep_ms = frame_delay;
+                    }
+                }
+                if (sleep_ms > timeout_ms) {
+                    sleep_ms = timeout_ms;
+                }
+
+                mouse_erase_pointer();
+                theme_render_timeout(timeout_ms);
+                mouse_render_pointer();
+
+                if ((c = pit_sleep_ms_and_quit_on_input(sleep_ms))) {
+                    skip_timeout = true;
+                    mouse_erase_pointer();
+                    theme_render_menu(selected_entry, max_entries, menu_tree, tree_offset);
+                    mouse_render_pointer();
+                    goto timeout_aborted;
+                }
+                timeout_ms -= sleep_ms;
+                if (theme_has_animation()) {
+                    theme_next_frame();
+                }
+            }
+            goto autoboot;
+        }
+
         print("\n\n");
         print_entry_comment(selected_menu_entry, terms[0]->rows - 3);
         while (timeout_ms != 0) {
@@ -2208,8 +2262,18 @@ refresh:
     mouse_render_pointer();
 
     for (;;) {
-        c = pit_sleep_ms_and_quit_on_input((uint64_t)65535 * 1000);
+        uint64_t sleep_ms = (uint64_t)65535 * 1000;
+        if (theme_active && theme_has_animation()) {
+            sleep_ms = theme_get_frame_delay();
+        }
+        c = pit_sleep_ms_and_quit_on_input(sleep_ms);
         if (c == 0) {
+            if (theme_active && theme_has_animation()) {
+                mouse_erase_pointer();
+                theme_next_frame();
+                theme_render_menu(selected_entry, max_entries, menu_tree, tree_offset);
+                mouse_render_pointer();
+            }
             continue;
         }
 timeout_aborted:
@@ -2314,6 +2378,10 @@ timeout_aborted:
                     selected_menu_entry->expanded = !selected_menu_entry->expanded;
                     goto refresh;
                 }
+                if (theme_active) {
+                    theme_cleanup();
+                    theme_active = false;
+                }
                 mouse_erase_pointer();
                 if (!quiet) {
                     if (term_backend == FALLBACK) {
@@ -2353,6 +2421,10 @@ timeout_aborted:
                     editor:
                     if (max_entries == 0 || selected_menu_entry->sub != NULL) {
                         break;
+                    }
+                    if (theme_active) {
+                        theme_cleanup();
+                        theme_active = false;
                     }
                     editor_no_term_reset = true;
                     mouse_erase_pointer();

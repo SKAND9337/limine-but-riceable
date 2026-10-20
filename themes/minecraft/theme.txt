@@ -1,0 +1,48 @@
+# Minegrub Theme for Limine
+# Minecraft-inspired boot menu with 9-slice stone buttons and custom font
+
+desktop-image: "background.png"
+desktop-color: "#000000"
+title-text: ""
+
+# Decorative Minecraft Logo
++ image {
+    left = 50%-180
+    top = 10%
+    width = 360
+    height = 96
+    file = "logo.png"
+}
+
+# Boot menu buttons
++ boot_menu {
+    left = 50%-250
+    top = 34%
+    width = 500
+    height = 50%
+
+    item_font = "Minecraft24.pf2"
+    selected_item_font = "Minecraft24.pf2"
+
+    item_color = "#383838"
+    selected_item_color = "#ffffff"
+
+    item_pixmap_style = "item_*.png"
+    selected_item_pixmap_style = "selected_item_*.png"
+
+    item_height = 40
+    item_spacing = 14
+    item_padding = 18
+}
+
+# Countdown label
++ label {
+    id = "__timeout__"
+    left = 50%-250
+    top = 86%
+    width = 500
+    align = "center"
+    text = "Auto-booting in %d seconds..."
+    color = "#e0e0e0"
+    font = "Minecraft24.pf2"
+}

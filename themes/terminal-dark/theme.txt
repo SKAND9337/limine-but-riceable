@@ -1,0 +1,43 @@
+# Terminal Dark Theme for Limine
+# High-contrast developer terminal aesthetic with 3-slice pill & OS icons
+
+desktop-image: "background.png"
+desktop-color: "#0a0a0f"
+
+title-text: "SYSTEM BOOTLOADER v12.x"
+title-color: "#00ffaa"
+title-font: "vmi24b.pf2"
+
++ boot_menu {
+    left = 18%
+    top = 34%
+    width = 64%
+    height = 48%
+
+    item_font = "vmi24b.pf2"
+    selected_item_font = "vmi24b.pf2"
+
+    item_color = "#9999aa"
+    selected_item_color = "#ffffff"
+
+    selected_item_pixmap_style = "select_*.png"
+
+    item_height = 42
+    item_spacing = 8
+    item_padding = 14
+
+    icon_width = 28
+    icon_height = 28
+    item_icon_space = 14
+}
+
++ label {
+    id = "__timeout__"
+    left = 18%
+    top = 84%
+    width = 64%
+    align = "left"
+    text = ">>> Automatic launch sequence in %d s..."
+    color = "#55ffff"
+    font = "vmi24b.pf2"
+}

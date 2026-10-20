@@ -1,0 +1,42 @@
+# Modern Minimalist Theme for Limine
+# Clean typography, centered layout, vibrant accents, and OS icons
+
+desktop-image: "background.png"
+desktop-color: "#12131c"
+
+title-text: "SELECT OPERATING SYSTEM"
+title-color: "#00e5ff"
+title-font: "font.pf2"
+
++ boot_menu {
+    left = 28%
+    top = 35%
+    width = 44%
+    height = 45%
+
+    item_font = "font.pf2"
+    selected_item_font = "font.pf2"
+
+    item_color = "#b0bec5"
+    selected_item_color = "#ffffff"
+    selected_item_bg_color = "#005577"
+
+    item_height = 38
+    item_spacing = 8
+    item_padding = 16
+
+    icon_width = 24
+    icon_height = 24
+    item_icon_space = 12
+}
+
++ label {
+    id = "__timeout__"
+    left = 28%
+    top = 80%
+    width = 44%
+    align = "center"
+    text = "Booting in %d seconds..."
+    color = "#80deea"
+    font = "font.pf2"
+}

@@ -75,3 +75,8 @@ compile_commands.json
 # clangd caches
 /.clangd
 /.cache/clangd
+
+# Python & Test Binaries
+__pycache__/
+*.py[cod]
+/tests/test_theme_unit
